@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>小组作业----元素周期表</title>
+		<!--<script type="text/javascript">
+			var iScale = 1 / window.devicePixelRatio;
+			document.write('<meta name="viewport" content="width=device-width,initial-scale='+iScale+',minimum-scale='+iScale+',maximum-scale='+iScale+',user-scalable=no"/>');
+			var iWidth = window.innerWidth;
+			document.getElementsByTagName('html')[0].style.fontSize = iWidth / 192 + 'px';
+		</script>-->
+		<style type="text/css">
+			body{
+				font-family: Helvetica, sans-serif;
+				/*perspective: 800px;*/
+				background-color: #000000;
+				/*position: relative;*/
+			}
+			#container{
+				transform-style: preserve-3d;
+				position: absolute;
+			}
+			#box{
+				transform-style: preserve-3d;
+				transform-origin: center;
+			}
+			.element {
+				width: 120px;
+				height: 160px;
+				text-align: center;
+				cursor: default;
+				position: absolute;
+				transform-origin: 0 0;
+			}
+			.element .number {
+				position: absolute;
+				top: 20px;
+				right: 20px;
+				font-size: 12px;
+				color: rgba(127, 255, 255, 0.75);
+			}
+			.element .symbol {
+				position: absolute;
+				top: 40px;
+				left: 0px;
+				right: 0px;
+				font-size: 60px;
+				font-weight: bold;
+				color: rgba(255, 255, 255, 0.75);
+				text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
+			}
+			.element .details {
+				position: absolute;
+				bottom: 15px;
+				left: 0px;
+				right: 0px;
+				font-size: 12px;
+				color: rgba(127, 255, 255, 0.75);
+			}
+			#menu{
+				position: absolute;
+				bottom: 20px;
+			}
+			button {
+				color: rgba(127, 255, 255, 0.75);
+				background: transparent;
+				outline: 1px solid rgba(127, 255, 255, 0.75);
+				border: 0px;
+				padding: 5px 10px;
+				cursor: pointer;
+			}
+			button:hover {
+				background-color: rgba(0, 255, 255, 0.5);
+			}
+			button:active {
+				color: #000000;
+				background-color: rgba(0, 255, 255, 0.75);
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="reset.css"/>
+		<script src="js/data.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/function createElements.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/function table.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/function montion.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/function grid.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div style="perspective: 800px; position: relative;">
+			<div id="container">
+				<div id="box">
+					<!--<div class="element">
+						<div class="number">1</div>
+						<div class="symbol">H</div>
+						<div class="details">Hydrogen<br>1.00794</div>
+					</div>-->
+				</div>
+			</div>
+		</div>
+		<div id="menu">
+			<button>TABLE</button>
+			<button>SPHERE</button>
+			<button>HELIX</button>
+			<button>GRID</button>
+			<button>RESET</button>
+		</div>
+		<script type="text/javascript">
+			var container = document.getElementById('container');
+			var box = document.getElementById('box');
+			var menu = document.getElementById('menu');
+			var div = document.getElementsByTagName('div')[0];
+			div.style.width = container.style.width = box.style.width = window.innerWidth +'px';
+			div.style.height = container.style.height = box.style.height = window.innerHeight+'px';
+			createElements();
+			var eles = document.getElementsByClassName('element');
+			initialization();
+			menu.style.left = (0.5*window.innerWidth - 0.5*menu.clientWidth) +'px';
+			window.onresize = function () {
+				for (var i = 0; i < eles.length-2; i++) {
+					var n = parseFloat(getComputedStyle(eles[i]).width);
+					var m = parseFloat(getComputedStyle(eles[i]).height);
+					var x = window.innerWidth - 18*n*0.18;
+					var y = window.innerHeight - 10*m*0.45;
+					eles[i].style.transform = 'scale(0.45) translateX('+(x/2+(table[i].column-1)*(n+20))+'px) translateY('+(y/2+(table[i].row-1)*(m+20))+'px)';
+				}
+				menu.style.left = (0.5*window.innerWidth - 0.5*menu.clientWidth) +'px';
+				container.style.width = box.style.width = window.innerWidth +'px';
+				document.body.style.height = container.style.height = box.style.height = window.innerHeight+'px';
+			}
+			function randomNum(min,max){
+		    	var random = Math.random()*(max - min) +min;
+		    	random = Math.round(random);
+		        return random;
+		  	}
+			function initialization () {
+				for (var i = 0; i < eles.length-2; i++) {
+					var n = parseFloat(getComputedStyle(eles[i]).width);
+					var m = parseFloat(getComputedStyle(eles[i]).height);
+					eles[i].style.transform = 'scale(0.45) translate3D('+randomNum(0*window.innerWidth,2.2*window.innerWidth)+'px,'+randomNum(0*window.innerHeight,2.2*window.innerHeight)+'px,'+randomNum(-100,500)+'px)';
+				}
+				setTimeout(function () {
+					for (var i = 0; i < eles.length-2; i++) {
+						montion(eles[i],function() {
+							var x = window.innerWidth - 18*n*0.18;
+							var y = window.innerHeight - 10*m*0.45;
+							this.style.transform = 'scale(0.45) translateX('+(x/2+(table[i].column-1)*(n+20))+'px) translateY('+(y/2+(table[i].row-1)*(m+20))+'px)';
+						})
+					}
+				},300)
+			}
+			var btns = document.getElementById('menu').children;
+			for (var i = 0; i < btns.length; i++) {
+				btns[i].onmousedown = btns[i].onmouseup = function (ev) {
+					ev.cancelBubble = true;
+				}
+			}
+			btns[0].onclick = function () {
+				for (var i = 0; i < eles.length-2; i++) {
+					var n = parseFloat(getComputedStyle(eles[i]).width);
+					var m = parseFloat(getComputedStyle(eles[i]).height);
+					var x = window.innerWidth - 18*n*0.18;
+					var y = window.innerHeight - 10*m*0.45;
+					tableMod(eles[i],n,m,i,x,y);
+				}
+			}
+			btns[2].onclick = function () {
+				helixMod();
+			}
+			btns[3].onclick = function () {
+				for (var i = 0; i < eles.length-2; i++) {
+					grid(eles[i],i)
+				}
+			}
+			btns[4].onclick = function () {
+				this.setAttribute('isclicked','true');
+				montion(box,function () {
+					this.style.transform = 'matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1)';
+				})
+				montion(container,function () {
+					this.style.left = '0px';
+					this.style.top = '0px';
+					this.style.transform = 'matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1)';
+				})
+			}
+			for (var i = 0; i < eles.length-2; i++) {
+				eles[i].onmouseenter = function () {
+					this.style.transition = '';
+					this.style.boxShadow = '0px 0px 20px rgba(0, 255, 255, 1)';
+					this.style.border = '1px solid rgba(127, 255, 255, 1)';
+				}
+				eles[i].onmouseleave = function () {
+					this.style.boxShadow = '';
+					this.style.boxShadow = '0px 0px 12px rgba(0, 255, 255, 0.5)';
+					this.style.border = '1px solid rgba(127, 255, 255, 0.25)';
+				}
+			}
+		</script>
+		<script src="js/function helix.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/function mouse.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/function SPHERE.js" type="text/javascript" charset="utf-8"></script>
+	</body>
+</html>
